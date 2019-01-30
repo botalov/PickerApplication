@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun openPicker() {
-        picker.show()
-
+        picker.show(this)
     }
 }
