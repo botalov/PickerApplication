@@ -1,17 +1,16 @@
 package com.botalov.imagepicker.control.bottom_sheet.view
 
-import android.content.pm.PackageManager
+import android.Manifest
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.ViewStub
 import com.botalov.imagepicker.R
-import android.support.v7.widget.GridLayoutManager
+import com.botalov.imagepicker.constants.F.Constants.COUNT_COLUMN
 import com.botalov.imagepicker.control.bottom_sheet.adapter.PickerRecyclerViewAdapter
-import com.botalov.imagepicker.control.bottom_sheet.model.ImageEntity
 import com.botalov.imagepicker.control.bottom_sheet.model.ImagesRepository
-import com.botalov.imagepicker.utils.PermissionsUtils
-import com.botalov.imagepicker.utils.PermissionsUtils.Companion.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-
+import com.tbruyelle.rxpermissions2.RxPermissions
 
 class PickerBottomSheet : BaseBottomSheetActivity() {
 
@@ -26,32 +25,29 @@ class PickerBottomSheet : BaseBottomSheetActivity() {
         setPeekHeight(700)
     }
 
+    @SuppressLint("CheckResult")
     private fun initViews() {
-        val permissionsUtils = PermissionsUtils()
-        if (permissionsUtils.checkPermissionREAD_EXTERNAL_STORAGE(this)) {
-            val imagesRepository = ImagesRepository()
-            imagesRepository.loadImages(this)
-            val images = imagesRepository.getAllImagesPath()
+        val rxPermissions = RxPermissions(this)
+        rxPermissions
+            .request(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            .subscribe { granted ->
+                if (granted) {
+                    val imagesRepository = ImagesRepository()
+                    imagesRepository.loadImages(this)
+                    val images = imagesRepository.getAllImagesPath()
 
-            val recyclerView = findViewById<RecyclerView>(R.id.images_recycler_view)
-            recyclerView.layoutManager = GridLayoutManager(this, 3)
-            val adapter = PickerRecyclerViewAdapter(this, images)
-            recyclerView.adapter = adapter
-            adapter.notifyDataSetChanged()
-        }
+                    val recyclerView = findViewById<RecyclerView>(com.botalov.imagepicker.R.id.images_recycler_view)
+                    recyclerView.layoutManager = GridLayoutManager(this, COUNT_COLUMN)
+                    val adapter = PickerRecyclerViewAdapter(this, images)
+                    recyclerView.adapter = adapter
+                    adapter.notifyDataSetChanged()
+                } else {
+                  finish()
+                }
+            }
     }
 
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-       when(requestCode) {
-           MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE->{
-               if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                   initViews()
-               }
-           }
-           else->{
-               super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-           }
-       }
-    }
 }

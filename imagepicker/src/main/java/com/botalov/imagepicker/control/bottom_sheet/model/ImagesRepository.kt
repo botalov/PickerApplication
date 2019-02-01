@@ -21,7 +21,7 @@ class ImagesRepository {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+                    val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA))
                     allImages.add(ImageEntity(path))
                 } while (cursor.moveToNext())
 

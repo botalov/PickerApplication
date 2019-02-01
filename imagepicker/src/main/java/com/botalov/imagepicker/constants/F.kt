@@ -1,7 +1,7 @@
 package com.botalov.imagepicker.constants
 
-public class F {
+class F {
     object Constants {
-        val REQUEST_CODE = 123
+        const val COUNT_COLUMN = 3
     }
 }
