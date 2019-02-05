@@ -1,16 +1,15 @@
 package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder
 
 import android.hardware.Camera
-import android.support.v7.app.AppCompatActivity
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import com.botalov.imagepicker.R
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.IPickerContext
 import com.botalov.imagepicker.control.camera.CameraHolderCallback
-import com.botalov.imagepicker.control.camera.FullCameraDialogFragment
 
 
-class CameraViewHolder(private val view: View, private val activity: AppCompatActivity) : BaseViewHolder(view), View.OnClickListener {
+class CameraViewHolder(private val view: View, private val pickerContext: IPickerContext) : BaseViewHolder(view), View.OnClickListener {
     private val surfaceView = view.findViewById<SurfaceView>(R.id.camera_surface_view)
     private var camera: Camera? = null
 
@@ -26,7 +25,6 @@ class CameraViewHolder(private val view: View, private val activity: AppCompatAc
     }
 
     override fun onClick(v: View?) {
-        val fullCamera = FullCameraDialogFragment.getNewInstance(view)
-        fullCamera.show(activity.supportFragmentManager, "FULL_CAMERA")
+        pickerContext.openCamera(view)
     }
 }

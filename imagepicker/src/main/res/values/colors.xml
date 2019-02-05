@@ -9,4 +9,7 @@
 
     <color name="colorTextTitle">#999999</color>
     <color name="colorButton">#a3d200</color>
+
+    <color name="colorAlertDialogTitle">#de000000</color>
+    <color name="colorAlertDialogMessage">#8a000000</color>
 </resources>

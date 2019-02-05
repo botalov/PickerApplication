@@ -1,6 +1,5 @@
 package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter
 
-import android.content.Context
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
@@ -9,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F.Constants.COUNT_COLUMN
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.IPickerContext
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.BaseViewHolder
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.CameraViewHolder
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.ImageViewHolder
@@ -17,12 +17,12 @@ import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.Im
 import java.lang.Exception
 
 
-class PickerRecyclerViewAdapter(private val context: Context, images: List<ImageEntity>) : RecyclerView.Adapter<BaseViewHolder>() {
+class PickerRecyclerViewAdapter(private val pickerContext: IPickerContext, images: List<ImageEntity>) : RecyclerView.Adapter<BaseViewHolder>() {
     private var mInflater: LayoutInflater? = null
     private var mImages: List<ImageEntity>? = images
 
     init {
-        this.mInflater = LayoutInflater.from(context)
+        this.mInflater = LayoutInflater.from(pickerContext.getContext())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): BaseViewHolder {
@@ -38,12 +38,12 @@ class PickerRecyclerViewAdapter(private val context: Context, images: List<Image
             ViewHolderType.CAMERA.ordinal -> {
                 val view: View = mInflater!!.inflate(R.layout.camera_view_holder, parent, false)
                 view.layoutParams = clParamsViewHolder
-                CameraViewHolder(view, context as AppCompatActivity)
+                CameraViewHolder(view, pickerContext)
             }
             ViewHolderType.IMAGE.ordinal -> {
                 val view: View = mInflater!!.inflate(R.layout.image_view_holder, parent, false)
                 view.layoutParams = clParamsViewHolder
-                ImageViewHolder(view, context)
+                ImageViewHolder(view, pickerContext)
             }
             else -> {
                 throw Exception("Type of view holder is wrong")

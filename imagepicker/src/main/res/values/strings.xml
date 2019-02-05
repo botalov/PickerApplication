@@ -4,4 +4,11 @@
     <string name="permissions_title_str">Разрешите доступ к памяти устройства</string>
     <string name="permissions_subtitle_str">Чтобы фотографии и файлы отображались здесь, разрешите приложению доступ к ним</string>
     <string name="permissions_button_text_str">Разрешить доступ</string>
+
+    //Files
+    <string name="error_image_size_title">Слишком большая фотография</string>
+    <string name="error_image_size_message">Допустимы фотографии до 10 МБ. Вы можете сжать фотографию, чтобы отправить её.</string>
+        <string name="error_cancel_button">Отмена</string>
+
+
 </resources>
