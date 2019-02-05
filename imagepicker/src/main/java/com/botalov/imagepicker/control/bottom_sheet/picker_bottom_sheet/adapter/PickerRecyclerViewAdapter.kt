@@ -1,7 +1,6 @@
 package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter
 
 import android.support.constraint.ConstraintLayout
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View

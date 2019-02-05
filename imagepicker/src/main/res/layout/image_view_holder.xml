@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_margin="1dp"
-        android:background="@color/colorPrimary">
+        android:padding="2.5dp">
 
     <ImageView
             android:id="@+id/image_view"
@@ -13,7 +11,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
 
-    <TextView
+    <!--<TextView
             android:id="@+id/bubble_text_view"
             android:layout_width="20dp"
             android:layout_height="20dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
@@ -21,5 +19,5 @@
             android:textColor="@color/colorBubbleTextSelectedImage"
             android:text="1"
             android:textAlignment="center"
-            android:gravity="center"/>
-</android.support.constraint.ConstraintLayout>
+            android:gravity="center"/>-->
+</LinearLayout>
