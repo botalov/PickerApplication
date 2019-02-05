@@ -9,8 +9,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.RelativeLayout
 import com.botalov.imagepicker.R
-import com.botalov.imagepicker.control.bottom_sheet.PickerBottomSheetBehavior
-import com.botalov.imagepicker.control.bottom_sheet.presenter.PickerBottomSheetPresenter
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.PickerBottomSheetBehavior
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerBottomSheetPresenter
 import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity.Constants.COLOR_ARG
 
 abstract class BaseBottomSheetActivity : AppCompatActivity() {
@@ -19,7 +19,8 @@ abstract class BaseBottomSheetActivity : AppCompatActivity() {
     }
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<RelativeLayout>
-    private val presenter = PickerBottomSheetPresenter()
+    private val presenter =
+        PickerBottomSheetPresenter()
     private var mColor: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {

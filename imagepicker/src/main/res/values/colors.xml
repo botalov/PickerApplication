@@ -6,4 +6,7 @@
 
     <color name="colorPickerBackground">#ffffff</color>
     <color name="colorBubbleTextSelectedImage">#ffffff</color>
+
+    <color name="colorTextTitle">#999999</color>
+    <color name="colorButton">#a3d200</color>
 </resources>

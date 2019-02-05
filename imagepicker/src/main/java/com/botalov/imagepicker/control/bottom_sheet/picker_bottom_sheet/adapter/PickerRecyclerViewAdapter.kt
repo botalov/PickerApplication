@@ -1,4 +1,4 @@
-package com.botalov.imagepicker.control.bottom_sheet.adapter
+package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter
 
 import android.content.Context
 import android.support.constraint.ConstraintLayout
@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F.Constants.COUNT_COLUMN
-import com.botalov.imagepicker.control.bottom_sheet.adapter.view_holder.BaseViewHolder
-import com.botalov.imagepicker.control.bottom_sheet.adapter.view_holder.CameraViewHolder
-import com.botalov.imagepicker.control.bottom_sheet.adapter.view_holder.ImageViewHolder
-import com.botalov.imagepicker.control.bottom_sheet.adapter.view_holder.ViewHolderType
-import com.botalov.imagepicker.control.bottom_sheet.model.ImageEntity
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.BaseViewHolder
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.CameraViewHolder
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.ImageViewHolder
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.ViewHolderType
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImageEntity
 import java.lang.Exception
 
 

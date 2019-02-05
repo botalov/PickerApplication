@@ -6,7 +6,7 @@
         android:orientation="vertical"
         app:behavior_hideable="true"
         app:behavior_peekHeight="112dp"
-        app:layout_behavior="com.botalov.imagepicker.control.bottom_sheet.PickerBottomSheetBehavior"
+        app:layout_behavior="com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.PickerBottomSheetBehavior"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android">
 

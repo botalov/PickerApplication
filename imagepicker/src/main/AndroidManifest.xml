@@ -9,7 +9,7 @@
             tools:targetApi="m">
 
         <activity
-                android:name=".control.bottom_sheet.view.PickerBottomSheet"
+                android:name=".control.bottom_sheet.picker_bottom_sheet.view.PickerBottomSheet"
                 android:theme="@style/Translucent"/>
 
     </application>

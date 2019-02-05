@@ -1,4 +1,4 @@
-package com.botalov.imagepicker.control.bottom_sheet.model
+package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model
 
 import android.content.Context
 import android.provider.MediaStore

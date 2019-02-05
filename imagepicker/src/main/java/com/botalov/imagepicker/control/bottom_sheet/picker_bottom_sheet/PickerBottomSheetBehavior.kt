@@ -1,4 +1,4 @@
-package com.botalov.imagepicker.control.bottom_sheet
+package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet
 
 import android.content.Context
 import android.support.design.widget.BottomSheetBehavior

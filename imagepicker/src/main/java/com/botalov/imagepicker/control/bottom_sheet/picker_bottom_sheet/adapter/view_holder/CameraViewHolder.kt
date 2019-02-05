@@ -1,6 +1,5 @@
-package com.botalov.imagepicker.control.bottom_sheet.adapter.view_holder
+package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder
 
-import android.content.Context
 import android.hardware.Camera
 import android.support.v7.app.AppCompatActivity
 import android.view.SurfaceHolder
@@ -27,8 +26,7 @@ class CameraViewHolder(private val view: View, private val activity: AppCompatAc
     }
 
     override fun onClick(v: View?) {
-        val fullCamera = FullCameraDialogFragment()
-        fullCamera.setParentView(view)
+        val fullCamera = FullCameraDialogFragment.getNewInstance(view)
         fullCamera.show(activity.supportFragmentManager, "FULL_CAMERA")
     }
 }
