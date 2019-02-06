@@ -8,8 +8,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val picker = Picker()
-    private val selectObserver = Observer<Int> { it->
+    private val picker = Picker.getInstance()
+    private val selectObserver = Observer<Int> {
         selected_image_count_text_view.text = it.toString()
     }
 
@@ -18,12 +18,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         picker.addSelectImageObserver(selectObserver)
+        //picker.setAccentColor(resources.getColor(R.color.colorAccent))
+        //picker.setStartHeightPicker(500)
 
-        open_picker_image_button.setOnClickListener { openPicker() }
-    }
-
-
-    private fun openPicker() {
-        picker.show(this)
+        open_picker_image_button.setOnClickListener { picker.show(this) }
     }
 }

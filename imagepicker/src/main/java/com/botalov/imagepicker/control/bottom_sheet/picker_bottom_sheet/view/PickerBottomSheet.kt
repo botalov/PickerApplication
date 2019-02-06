@@ -2,19 +2,21 @@ package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ComponentCallbacks
 import android.content.Context
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewStub
+import android.support.v7.widget.Toolbar
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.botalov.imagepicker.Picker
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F.Constants.COUNT_COLUMN
 import com.botalov.imagepicker.constants.F.Constants.MAX_FILE_SIZE
@@ -28,7 +30,7 @@ import java.io.File
 
 class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
-    private val peekHeight = 700
+    private val peekHeight = Picker.getInstance().getStartHeightPicker()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,6 +64,23 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         return this
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_picker, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item?.itemId
+        when(id!!){
+            R.id.action_close -> {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     @SuppressLint("CheckResult")
     private fun initViews() {
         val rxPermissions = RxPermissions(this)
@@ -76,6 +95,7 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
             }
 
             val button = findViewById<Button>(R.id.permissions_button)
+            button.setTextColor(Picker.getInstance().getAcceptColor())
             button.setOnClickListener {
                 rxPermissions
                     .request(
@@ -97,6 +117,8 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
             permissionsLL.visibility = View.GONE
            loadImages()
         }
+
+        initToolbar()
     }
 
     private fun loadImages() {
@@ -132,5 +154,14 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
     private fun sendImage(file: File) {
         Toast.makeText(this, "Select image with path: ${file.path}", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun initToolbar() {
+        val appBar = findViewById<View>(R.id.app_bar)
+        val toolbar = appBar.findViewById<Toolbar>(R.id.toolbar)
+        /*val toolbarView = layoutInflater.inflate(R.layout.toolbar_picker_view, null)
+        toolbar.addView(toolbarView)*/
+        toolbar.title=""
+        setSupportActionBar(toolbar)
     }
 }

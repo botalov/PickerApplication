@@ -3,9 +3,11 @@ package com.botalov.imagepicker.control.bottom_sheet.view
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import com.botalov.imagepicker.R
@@ -18,7 +20,7 @@ abstract class BaseBottomSheetActivity : AppCompatActivity() {
         const val COLOR_ARG = "color_arg"
     }
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<RelativeLayout>
+    protected lateinit var bottomSheetBehavior: BottomSheetBehavior<RelativeLayout>
     private val presenter =
         PickerBottomSheetPresenter()
     private var mColor: Int = 0
@@ -51,6 +53,7 @@ abstract class BaseBottomSheetActivity : AppCompatActivity() {
         val touchOutside = findViewById<View>(R.id.touch_outside)
         touchOutside?.setOnClickListener { finish() }
 
+        val appBar = findViewById<View>(R.id.app_bar)
         val llBottomSheetContainer = findViewById<RelativeLayout>(R.id.rl_bottom_sheet_content_container)
         if (llBottomSheetContainer != null) {
             bottomSheetBehavior = BottomSheetBehavior.from<RelativeLayout>(llBottomSheetContainer)
@@ -58,13 +61,16 @@ abstract class BaseBottomSheetActivity : AppCompatActivity() {
                 override fun onStateChanged(view: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_HIDDEN -> finish()
-                        BottomSheetBehavior.STATE_EXPANDED -> setStatusBarColor(true)
+                        BottomSheetBehavior.STATE_EXPANDED -> {
+                            setStatusBarColor(true)
+                        }
+
                         else -> setStatusBarColor(false)
                     }
                 }
 
-                override fun onSlide(view: View, v: Float) {
-
+                override fun onSlide(view: View, slideOffset: Float) {
+                    appBar.alpha = slideOffset
                 }
             })
 
