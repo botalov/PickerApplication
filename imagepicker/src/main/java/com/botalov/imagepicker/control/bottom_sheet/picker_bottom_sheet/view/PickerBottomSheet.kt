@@ -2,34 +2,32 @@ package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ComponentCallbacks
 import android.content.Context
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.botalov.imagepicker.Picker
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F.Constants.COUNT_COLUMN
-import com.botalov.imagepicker.constants.F.Constants.MAX_FILE_SIZE
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.IPickerContext
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.PickerRecyclerViewAdapter
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImagesRepository
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity
-import com.botalov.imagepicker.control.camera.FullCameraDialogFragment
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Observable
 import java.io.File
 
 class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
+    private val presenter = PickerPresenter()
     private val peekHeight = Picker.getInstance().getStartHeightPicker()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,10 +38,17 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
         initViews()
         setPeekHeight(peekHeight)
+
+        presenter.attachView(this)
     }
 
-    override fun openImage(file: File) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
+   /* override fun openImage(file: File) {
+        TODO("not implemented") //To change body of created functions use Filжe | Settings | File Templates.
     }
 
     override fun clickImage(file: File) {
@@ -59,7 +64,7 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         val fullCamera = FullCameraDialogFragment.getNewInstance(parentView)
         fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
     }
-
+    */
     override fun getContext(): Context {
         return this
     }
@@ -128,13 +133,13 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
         val recyclerView = findViewById<RecyclerView>(com.botalov.imagepicker.R.id.images_recycler_view)
         recyclerView.layoutManager = GridLayoutManager(this, COUNT_COLUMN)
-        val adapter = PickerRecyclerViewAdapter(this, images)
+        val adapter = PickerRecyclerViewAdapter(this, images, presenter)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
     @SuppressLint("InflateParams")
-    private fun showImageSizeError(){
+    fun showImageSizeError(){
         val builder = AlertDialog.Builder(this)
         val alertDialog = builder.create()
         val view = layoutInflater.inflate(R.layout.error_size_alert_dialog, null)
@@ -152,12 +157,13 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         alertDialog.show()
     }
 
-    private fun sendImage(file: File) {
-        Toast.makeText(this, "Select image with path: ${file.path}", Toast.LENGTH_SHORT).show()
+    fun sendImage(file: File) {
+        Observable.just(file).subscribe(Picker.getInstance().getObserver()!!)
+        finish()
     }
 
     private fun initToolbar() {
-        val appBar = findViewById<View>(R.id.app_bar)
+        val appBar = findViewById<View>(R.id.app_bar_picker)
         val toolbar = appBar.findViewById<Toolbar>(R.id.toolbar)
         /*val toolbarView = layoutInflater.inflate(R.layout.toolbar_picker_view, null)
         toolbar.addView(toolbarView)*/

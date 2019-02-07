@@ -7,9 +7,10 @@ import android.widget.ImageView
 import com.botalov.imagepicker.R
 import android.net.Uri
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.IPickerContext
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import com.bumptech.glide.Glide
 
-class ImageViewHolder(private val view: View, private val pickerContext: IPickerContext) : BaseViewHolder(view),  View.OnClickListener {
+class ImageViewHolder(private val view: View, private val pickerContext: IPickerContext, private val presenter: PickerPresenter) : BaseViewHolder(view),  View.OnClickListener {
     private var file: File? = null
 
     override fun bind(image: ImageEntity?) {
@@ -27,6 +28,6 @@ class ImageViewHolder(private val view: View, private val pickerContext: IPicker
 
 
     override fun onClick(v: View?) {
-        pickerContext.clickImage(file!!)
+        presenter.onClickImage(file!!)
     }
 }

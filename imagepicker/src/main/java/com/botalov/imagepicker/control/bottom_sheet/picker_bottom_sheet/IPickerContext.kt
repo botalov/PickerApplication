@@ -5,8 +5,8 @@ import android.view.View
 import java.io.File
 
 interface IPickerContext {
-    fun openImage(file: File)
+    /*fun openImage(file: File)
     fun clickImage(file: File)
-    fun openCamera(parentView: View)
+    fun openCamera(parentView: View)*/
     fun getContext() : Context
 }

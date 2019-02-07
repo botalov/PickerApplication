@@ -1,17 +1,14 @@
 package com.botalov.imagepicker.control.camera
 
-import android.animation.ValueAnimator
 import android.graphics.Point
 import android.hardware.Camera
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.*
 import android.widget.FrameLayout
-import android.animation.AnimatorSet
-import android.animation.Animator
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import com.botalov.imagepicker.R
-import android.animation.AnimatorListenerAdapter
-import android.widget.ImageButton
 
 
 class FullCameraDialogFragment : DialogFragment() {
@@ -34,12 +31,12 @@ class FullCameraDialogFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.camera_full_view_layout, container, false)
-        surfaceView = mainView.findViewById(R.id.camera_surface_view)
+       /* surfaceView = mainView.findViewById(R.id.camera_surface_view)
         camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
         val holderCallback = CameraHolderCallback(camera)
         val holder = surfaceView?.holder
         holder?.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
-        holder?.addCallback(holderCallback)
+        holder?.addCallback(holderCallback)*/
 
         return mainView
     }
@@ -47,7 +44,16 @@ class FullCameraDialogFragment : DialogFragment() {
     override fun onResume() {
         super.onResume()
         calculateAndSetDialogPosition()
-        openAnimation()
+        //openAnimation()
+
+        val resizeAnimation = ResizeAnimation(
+            view!!,
+            activity?.window?.windowManager?.defaultDisplay?.height!!,
+            startView!!.height
+        )
+        resizeAnimation.duration = 1000
+        view!!.startAnimation(resizeAnimation)
+
     }
 
     private fun calculateAndSetDialogPosition() {
@@ -75,6 +81,21 @@ class FullCameraDialogFragment : DialogFragment() {
         window.attributes = attrs
     }
 
+    internal inner class ResizeAnimation(var view: View, val targetHeight: Int, var startHeight: Int) : Animation() {
+
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+            val newHeight = (startHeight + targetHeight * interpolatedTime).toInt()
+            view.layoutParams.height = newHeight
+            view.requestLayout()
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+
+/*
     private fun openAnimation() {
         val animator = getViewScaleAnimator(view!!)
         animator.addListener(getAnimatorListener(view!!.findViewById(R.id.shutter_image_button)))
@@ -93,7 +114,7 @@ class FullCameraDialogFragment : DialogFragment() {
         }
         animatorSet.play(heightAnimator)
 
-        val desiredWidth = activity?.window?.windowManager?.defaultDisplay?.width
+      *//*  val desiredWidth = activity?.window?.windowManager?.defaultDisplay?.width
         val currentWidth = startView?.width
         val widthAnimator = ValueAnimator.ofInt(currentWidth!!, desiredWidth!!).setDuration(1000)
         widthAnimator.addUpdateListener { animation ->
@@ -102,7 +123,7 @@ class FullCameraDialogFragment : DialogFragment() {
             from.layoutParams = params
         }
 
-        animatorSet.play(widthAnimator)
+        animatorSet.play(widthAnimator)*//*
 
         return animatorSet
     }
@@ -120,4 +141,5 @@ class FullCameraDialogFragment : DialogFragment() {
             }
         }
     }
+    */
 }

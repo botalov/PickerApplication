@@ -13,10 +13,11 @@ import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.ImageViewHolder
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.view_holder.ViewHolderType
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImageEntity
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import java.lang.Exception
 
 
-class PickerRecyclerViewAdapter(private val pickerContext: IPickerContext, images: List<ImageEntity>) : RecyclerView.Adapter<BaseViewHolder>() {
+class PickerRecyclerViewAdapter(private val pickerContext: IPickerContext, images: List<ImageEntity>, private val presenter: PickerPresenter) : RecyclerView.Adapter<BaseViewHolder>() {
     private var mInflater: LayoutInflater? = null
     private var mImages: List<ImageEntity>? = images
 
@@ -37,12 +38,12 @@ class PickerRecyclerViewAdapter(private val pickerContext: IPickerContext, image
             ViewHolderType.CAMERA.ordinal -> {
                 val view: View = mInflater!!.inflate(R.layout.camera_view_holder, parent, false)
                 view.layoutParams = clParamsViewHolder
-                CameraViewHolder(view, pickerContext)
+                CameraViewHolder(view, presenter)
             }
             ViewHolderType.IMAGE.ordinal -> {
                 val view: View = mInflater!!.inflate(R.layout.image_view_holder, parent, false)
                 view.layoutParams = clParamsViewHolder
-                ImageViewHolder(view, pickerContext)
+                ImageViewHolder(view, pickerContext, presenter)
             }
             else -> {
                 throw Exception("Type of view holder is wrong")

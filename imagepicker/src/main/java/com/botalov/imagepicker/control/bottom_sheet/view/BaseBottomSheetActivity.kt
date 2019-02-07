@@ -3,16 +3,14 @@ package com.botalov.imagepicker.control.bottom_sheet.view
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.PickerBottomSheetBehavior
-import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerBottomSheetPresenter
+import com.botalov.imagepicker.control.bottom_sheet.presenter.PickerBottomSheetPresenter
 import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity.Constants.COLOR_ARG
 
 abstract class BaseBottomSheetActivity : AppCompatActivity() {
@@ -30,7 +28,7 @@ abstract class BaseBottomSheetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setStatusBarColor(false)
 
-        setContentView(R.layout.activity_bottom_sheet_base)
+        setContentView(R.layout.activity_bottom_sheet_base_image_picker)
 
         baseInit()
 
@@ -53,7 +51,7 @@ abstract class BaseBottomSheetActivity : AppCompatActivity() {
         val touchOutside = findViewById<View>(R.id.touch_outside)
         touchOutside?.setOnClickListener { finish() }
 
-        val appBar = findViewById<View>(R.id.app_bar)
+        val appBar = findViewById<View>(R.id.app_bar_picker)
         val llBottomSheetContainer = findViewById<RelativeLayout>(R.id.rl_bottom_sheet_content_container)
         if (llBottomSheetContainer != null) {
             bottomSheetBehavior = BottomSheetBehavior.from<RelativeLayout>(llBottomSheetContainer)
