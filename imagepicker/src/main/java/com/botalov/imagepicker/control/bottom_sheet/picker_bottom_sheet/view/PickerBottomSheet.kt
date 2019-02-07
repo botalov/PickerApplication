@@ -51,15 +51,6 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         TODO("not implemented") //To change body of created functions use Filжe | Settings | File Templates.
     }
 
-    override fun clickImage(file: File) {
-        if (file.length() > MAX_FILE_SIZE) {
-            showImageSizeError()
-        }
-        else {
-            sendImage(file)
-        }
-    }
-
     override fun openCamera(parentView: View) {
         val fullCamera = FullCameraDialogFragment.getNewInstance(parentView)
         fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
