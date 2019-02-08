@@ -5,9 +5,8 @@ import android.hardware.Camera
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.*
-import android.widget.FrameLayout
-import android.view.animation.Animation
-import android.view.animation.Transformation
+import com.botalov.imagepicker.utils.AnimationUtils
+import android.view.ViewGroup
 import com.botalov.imagepicker.R
 
 
@@ -20,9 +19,25 @@ class FullCameraDialogFragment : DialogFragment() {
         fun getNewInstance(parentView: View): FullCameraDialogFragment {
             val dialog = FullCameraDialogFragment()
             dialog.setStartView(parentView)
-            dialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CameraDialogStyle)
+            dialog.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.CameraDialogStyle)
             return dialog
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (dialog != null) {
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.MATCH_PARENT
+            dialog?.window?.setLayout(width, height)
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        calculateAndSetDialogPosition()
     }
 
     private fun setStartView(view: View) {
@@ -31,29 +46,20 @@ class FullCameraDialogFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.camera_full_view_layout, container, false)
-       /* surfaceView = mainView.findViewById(R.id.camera_surface_view)
+        surfaceView = mainView.findViewById(R.id.camera_surface_view)
         camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
         val holderCallback = CameraHolderCallback(camera)
         val holder = surfaceView?.holder
         holder?.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
-        holder?.addCallback(holderCallback)*/
+        holder?.addCallback(holderCallback)
 
         return mainView
     }
 
     override fun onResume() {
         super.onResume()
-        calculateAndSetDialogPosition()
+        //calculateAndSetDialogPosition()
         //openAnimation()
-
-        val resizeAnimation = ResizeAnimation(
-            view!!,
-            activity?.window?.windowManager?.defaultDisplay?.height!!,
-            startView!!.height
-        )
-        resizeAnimation.duration = 1000
-        view!!.startAnimation(resizeAnimation)
-
     }
 
     private fun calculateAndSetDialogPosition() {
@@ -61,8 +67,10 @@ class FullCameraDialogFragment : DialogFragment() {
             return
         }
 
-        view?.layoutParams = FrameLayout.LayoutParams(startView!!.width, startView!!.height)
+        //view?.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        //view?.requestLayout()
 
+        /*view?.layoutParams = FrameLayout.LayoutParams(startView!!.width, startView!!.height)*/
         val display = activity?.windowManager?.defaultDisplay
         val size = Point()
         display?.getSize(size)
@@ -75,71 +83,21 @@ class FullCameraDialogFragment : DialogFragment() {
         val window = dialog.window
 
         val attrs = window!!.attributes
-        attrs.x = -size.x / 2 + sourceX + startView!!.width / 2
-        attrs.y = -size.y / 2 + sourceY + startView!!.height / 2
+        val x = -size.x / 2 + sourceX + startView!!.width / 2
+        val y = -size.y / 2 + sourceY + startView!!.height / 2
+        attrs.x = x
+        attrs.y = y
 
         window.attributes = attrs
+
+        val locationInScreen: IntArray? = IntArray(2)
+        startView?.getLocationOnScreen(locationInScreen)
+
+        AnimationUtils.circleAnimationView(surfaceView!!,
+            true,
+            100000,
+            locationInScreen!![0] + startView!!.width / 2,
+            locationInScreen!![1] + startView!!.height / 2,
+            size)
     }
-
-    internal inner class ResizeAnimation(var view: View, val targetHeight: Int, var startHeight: Int) : Animation() {
-
-        override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-            val newHeight = (startHeight + targetHeight * interpolatedTime).toInt()
-            view.layoutParams.height = newHeight
-            view.requestLayout()
-        }
-
-        override fun willChangeBounds(): Boolean {
-            return true
-        }
-    }
-
-
-/*
-    private fun openAnimation() {
-        val animator = getViewScaleAnimator(view!!)
-        animator.addListener(getAnimatorListener(view!!.findViewById(R.id.shutter_image_button)))
-        animator.start()
-    }
-
-    private fun getViewScaleAnimator(from: View): Animator {
-        val animatorSet = AnimatorSet()
-        val desiredHeight = activity?.window?.windowManager?.defaultDisplay?.height
-        val currentHeight = startView?.height
-        val heightAnimator = ValueAnimator.ofInt(currentHeight!!, desiredHeight!!).setDuration(1000)
-        heightAnimator.addUpdateListener { animation ->
-            val params = from.layoutParams as FrameLayout.LayoutParams
-            params.height = animation.animatedValue as Int
-            from.layoutParams = params
-        }
-        animatorSet.play(heightAnimator)
-
-      *//*  val desiredWidth = activity?.window?.windowManager?.defaultDisplay?.width
-        val currentWidth = startView?.width
-        val widthAnimator = ValueAnimator.ofInt(currentWidth!!, desiredWidth!!).setDuration(1000)
-        widthAnimator.addUpdateListener { animation ->
-            val params = from.layoutParams as FrameLayout.LayoutParams
-            params.width = animation.animatedValue as Int
-            from.layoutParams = params
-        }
-
-        animatorSet.play(widthAnimator)*//*
-
-        return animatorSet
-    }
-
-    private fun getAnimatorListener(view: ImageButton): AnimatorListenerAdapter {
-        return object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator) {
-                super.onAnimationStart(animation)
-                view.visibility = View.GONE
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                view.visibility = View.VISIBLE
-            }
-        }
-    }
-    */
 }

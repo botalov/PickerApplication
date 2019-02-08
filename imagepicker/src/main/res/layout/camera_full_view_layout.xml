@@ -6,29 +6,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:background="@color/colorPrimary">
+        android:background="@android:color/transparent">
 
-    <!--<SurfaceView
-            android:id="@+id/camera_surface_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-    />
+    <!--<android.support.constraint.ConstraintLayout
+            android:id="@+id/back_cl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:animateLayoutChanges="true"
+            android:background="@color/colorAccent">-->
 
-    <ImageButton
-            android:id="@+id/shutter_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_camera_shutter"
-            android:background="@android:color/transparent"
-            android:padding="8dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"/>-->
+        <SurfaceView
+                android:id="@+id/camera_surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+
+         <ImageButton
+                 android:id="@+id/shutter_image_button"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:src="@drawable/ic_camera_shutter"
+                 android:background="@android:color/transparent"
+                 android:padding="8dp"
+                 android:visibility="gone"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 android:layout_marginBottom="24dp"
+                 app:layout_constraintBottom_toBottomOf="parent"/>
+    <!--</android.support.constraint.ConstraintLayout>-->
+
+
 
 </android.support.constraint.ConstraintLayout>

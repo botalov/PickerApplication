@@ -26,6 +26,6 @@ class CameraViewHolder(private val view: View, private val presenter: PickerPres
     }
 
     override fun onClick(v: View?) {
-        presenter.onClickCameraPreview()
+        presenter.onClickCameraPreview(v!!)
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -21,6 +22,7 @@ import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImagesRepository
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity
+import com.botalov.imagepicker.control.camera.FullCameraDialogFragment
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import java.io.File
@@ -151,6 +153,11 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     fun sendImage(file: File) {
         Observable.just(file).subscribe(Picker.getInstance().getObserver()!!)
         finish()
+    }
+
+    fun showFullCamera(startView: View) {
+        val fullCamera = FullCameraDialogFragment.getNewInstance(startView)
+        fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
     }
 
     private fun initToolbar() {
