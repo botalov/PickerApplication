@@ -25,6 +25,7 @@ import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity
 import com.botalov.imagepicker.control.camera.FullCameraDialogFragment
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
+import io.reactivex.functions.Consumer
 import java.io.File
 
 class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
@@ -83,7 +84,10 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     private fun initViews() {
         val rxPermissions = RxPermissions(this)
         val permissionsLL = findViewById<ConstraintLayout>(R.id.main_permissions_cl)
-        if(!rxPermissions.isGranted(Manifest.permission.CAMERA) || !rxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        if(!rxPermissions.isGranted(Manifest.permission.CAMERA)
+            || !rxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+            || !rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
             permissionsLL.visibility = View.VISIBLE
             val separatorView = findViewById<View>(R.id.separator_view)
             val params = separatorView.layoutParams
@@ -98,7 +102,8 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
                 rxPermissions
                     .request(
                         Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                     .subscribe { granted ->
                         if(granted) {
@@ -157,6 +162,11 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
     fun showFullCamera(startView: View) {
         val fullCamera = FullCameraDialogFragment.getNewInstance(startView)
+        fullCamera.setSubscribe(Consumer {
+            run {
+                sendImage(it)
+            }
+        })
         fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
     }
 

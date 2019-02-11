@@ -8,7 +8,7 @@ import io.reactivex.Observer
 import java.io.File
 
 class Picker private constructor() {
-    private val selectedImageObservers = ArrayList<Observer<Int>>()
+    private val selectedImageObservers = ArrayList<Observer<File>>()
     private var mStartHeightPicker: Int = 700
     private var mAccentColor: Int = Color.parseColor("#a3d200")
 
@@ -29,7 +29,7 @@ class Picker private constructor() {
         context.startActivity(intent)
     }
 
-    fun addSelectImageObserver(observer: Observer<Int>) {
+    fun addSelectImageObserver(observer: Observer<File>) {
         selectedImageObservers.add(observer)
     }
 

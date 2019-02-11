@@ -16,7 +16,7 @@ class ImagesRepository {
             starStr,
             null,
             null,
-            null)
+            MediaStore.MediaColumns.DATE_ADDED + " DESC")
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

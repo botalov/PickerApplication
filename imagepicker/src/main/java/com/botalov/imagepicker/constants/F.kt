@@ -8,5 +8,7 @@ class F {
          * 10 MB
          */
         const val MAX_FILE_SIZE = 10_485_760
+
+        const val IMAGE_DIRECTORY = "carrot"
     }
 }

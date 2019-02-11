@@ -29,7 +29,7 @@
                  android:src="@drawable/ic_camera_shutter"
                  android:background="@android:color/transparent"
                  android:padding="8dp"
-                 android:visibility="gone"
+                 android:visibility="visible"
                  app:layout_constraintEnd_toEndOf="parent"
                  app:layout_constraintStart_toStartOf="parent"
                  android:layout_marginBottom="24dp"
