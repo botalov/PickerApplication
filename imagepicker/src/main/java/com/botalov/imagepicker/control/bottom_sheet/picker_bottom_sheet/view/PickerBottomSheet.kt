@@ -3,6 +3,8 @@ package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
@@ -51,15 +53,6 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         presenter.detachView()
     }
 
-   /* override fun openImage(file: File) {
-        TODO("not implemented") //To change body of created functions use Filжe | Settings | File Templates.
-    }
-
-    override fun openCamera(parentView: View) {
-        val fullCamera = FullCameraDialogFragment.getNewInstance(parentView)
-        fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
-    }
-    */
     override fun getContext(): Context {
         return this
     }
@@ -68,13 +61,16 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         menuInflater.inflate(R.menu.menu_picker, menu)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             menu!!.findItem(R.id.action_close).icon.setTint(Picker.getInstance().getAcceptColor())
+        } else {
+            menu!!.findItem(R.id.action_close).icon.colorFilter =
+                PorterDuffColorFilter(Picker.getInstance().getAcceptColor(), PorterDuff.Mode.SRC_IN)
         }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item?.itemId
-        when(id!!){
+        when (id!!) {
             R.id.action_close -> {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return true
@@ -88,14 +84,15 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     private fun initViews() {
         val rxPermissions = RxPermissions(this)
         val permissionsLL: ConstraintLayout = findViewById(R.id.main_permissions_cl)
-        if(!rxPermissions.isGranted(Manifest.permission.CAMERA)
+        if (!rxPermissions.isGranted(Manifest.permission.CAMERA)
             || !rxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
-            || !rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            || !rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        ) {
 
             permissionsLL.visibility = View.VISIBLE
             val separatorView = findViewById<View>(R.id.separator_view)
             val params = separatorView.layoutParams
-            if(params is ViewGroup.MarginLayoutParams) {
+            if (params is ViewGroup.MarginLayoutParams) {
                 params.topMargin = peekHeight
                 separatorView.requestLayout()
             }
@@ -110,19 +107,17 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                     .subscribe { granted ->
-                        if(granted) {
+                        if (granted) {
                             permissionsLL.visibility = View.GONE
                             loadImages()
-                        }
-                        else {
+                        } else {
                             finish()
                         }
                     }
             }
-        }
-        else {
+        } else {
             permissionsLL.visibility = View.GONE
-           loadImages()
+            loadImages()
         }
 
         initToolbar()
@@ -141,7 +136,7 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     }
 
     @SuppressLint("InflateParams")
-    fun showImageSizeError(){
+    fun showImageSizeError() {
         val builder = AlertDialog.Builder(this)
         val alertDialog = builder.create()
         val view = layoutInflater.inflate(R.layout.error_size_alert_dialog, null)
@@ -180,9 +175,7 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     private fun initToolbar() {
         val appBar = findViewById<View>(R.id.app_bar_picker)
         val toolbar = appBar.findViewById<Toolbar>(R.id.toolbar)
-        /*val toolbarView = layoutInflater.inflate(R.layout.toolbar_picker_view, null)
-        toolbar.addView(toolbarView)*/
-        toolbar.title=""
+        toolbar.title = ""
         setSupportActionBar(toolbar)
     }
 }
