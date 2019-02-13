@@ -7,7 +7,7 @@
 
     //Files
     <string name="error_image_size_title">Слишком большая фотография</string>
-    <string name="error_image_size_message">Допустимы фотографии до 10 МБ. Вы можете сжать фотографию, чтобы отправить её.</string>
+    <string name="error_image_size_message">Допустимы фотографии до %1$d МБ. Вы можете сжать фотографию, чтобы отправить её.</string>
         <string name="error_cancel_button">Отмена</string>
 
 

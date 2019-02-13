@@ -3,6 +3,7 @@ package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
@@ -65,6 +66,9 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_picker, menu)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            menu!!.findItem(R.id.action_close).icon.setTint(Picker.getInstance().getAcceptColor())
+        }
         return true
     }
 
@@ -83,7 +87,7 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     @SuppressLint("CheckResult")
     private fun initViews() {
         val rxPermissions = RxPermissions(this)
-        val permissionsLL = findViewById<ConstraintLayout>(R.id.main_permissions_cl)
+        val permissionsLL: ConstraintLayout = findViewById(R.id.main_permissions_cl)
         if(!rxPermissions.isGranted(Manifest.permission.CAMERA)
             || !rxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
             || !rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -146,10 +150,13 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         titleTextView.text = getString(R.string.error_image_size_title)
 
         val messageTextView = view.findViewById<TextView>(R.id.message_text_view)
-        messageTextView.text = getString(R.string.error_image_size_message)
+        val maxsize = Picker.getInstance().getImageMaxSize()
+        val message = String.format(getString(R.string.error_image_size_message), maxsize)
+        messageTextView.text = message
 
         val closeButton = view.findViewById<Button>(R.id.close_error_dialog_button)
         closeButton.text = getString(R.string.error_cancel_button)
+        closeButton.setTextColor(Picker.getInstance().getAcceptColor())
         closeButton.setOnClickListener { alertDialog.dismiss() }
 
         alertDialog.show()

@@ -173,11 +173,13 @@ class FullCameraDialogFragment : DialogFragment() {
 
             val fo = FileOutputStream(pictureFile)
             fo.write(bytes.toByteArray())
+            //fo.write();
             MediaScannerConnection.scanFile(
                 this.context,
                 arrayOf(pictureFile.path),
                 arrayOf("image/jpeg"), null
             )
+
             fo.close()
 
             return pictureFile

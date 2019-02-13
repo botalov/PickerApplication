@@ -11,6 +11,7 @@ class Picker private constructor() {
     private val selectedImageObservers = ArrayList<Observer<File>>()
     private var mStartHeightPicker: Int = 700
     private var mAccentColor: Int = Color.parseColor("#a3d200")
+    private var mImageMaxSize = 10 //10 Mb
 
     private var observer: Observer<File>? = null
 
@@ -68,5 +69,20 @@ class Picker private constructor() {
     }
     internal fun getAcceptColor(): Int {
         return mAccentColor
+    }
+
+    /**
+     * Set max size for uploaded image (MB). Set '0' value for disable the check.
+     * Default value = 10 MB
+     * @param size Image's size (MB)
+     */
+    fun setImageMaxSize(size: Int) {
+        mImageMaxSize = size
+    }
+    internal fun getImageMaxSize(): Int {
+        return mImageMaxSize
+    }
+    internal fun getImageMaxSizeInByte(): Int {
+        return mImageMaxSize * 1024 * 1024
     }
 }
