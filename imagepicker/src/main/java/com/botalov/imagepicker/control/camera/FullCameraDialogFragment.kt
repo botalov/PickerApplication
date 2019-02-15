@@ -3,7 +3,7 @@ package com.botalov.imagepicker.control.camera
 import android.graphics.Point
 import android.hardware.Camera
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.*
 import com.botalov.imagepicker.utils.AnimationUtils
 import android.view.ViewGroup
@@ -25,7 +25,7 @@ import android.media.ExifInterface
 import com.botalov.imagepicker.R
 
 
-class FullCameraDialogFragment : DialogFragment() {
+class FullCameraDialogFragment : androidx.fragment.app.DialogFragment() {
     private var startView: View? = null
     private var surfaceView: SurfaceView? = null
     private var camera: Camera? = null
@@ -38,7 +38,7 @@ class FullCameraDialogFragment : DialogFragment() {
         fun getNewInstance(parentView: View): FullCameraDialogFragment {
             val dialog = FullCameraDialogFragment()
             dialog.setStartView(parentView)
-            dialog.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.CameraDialogStyle)
+            dialog.setStyle(androidx.fragment.app.DialogFragment.STYLE_NO_FRAME, R.style.CameraDialogStyle)
             return dialog
         }
     }
@@ -102,7 +102,7 @@ class FullCameraDialogFragment : DialogFragment() {
         val sourceX = location[0]
         val sourceY = location[1]
 
-        val window = dialog.window
+        val window = dialog?.window
 
         val attrs = window!!.attributes
         val x = -size.x / 2 + sourceX + startView!!.width / 2

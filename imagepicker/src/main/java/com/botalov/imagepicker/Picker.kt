@@ -2,7 +2,7 @@ package com.botalov.imagepicker
 
 import android.content.Intent
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.view.PickerBottomSheet
 import io.reactivex.Observer
 import java.io.File
@@ -11,7 +11,7 @@ class Picker private constructor() {
     private val selectedImageObservers = ArrayList<Observer<File>>()
     private var mStartHeightPicker: Int = 700
     private var mAccentColor: Int = Color.parseColor("#a3d200")
-    private var mImageMaxSize = 10 //10 Mb
+    private var mImageMaxSize = 10 //Mb
 
     private var observer: Observer<File>? = null
 
