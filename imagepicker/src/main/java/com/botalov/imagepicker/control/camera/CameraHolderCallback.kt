@@ -15,7 +15,6 @@ class CameraHolderCallback(private val camera: Camera?) : SurfaceHolder.Callback
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
         camera!!.setPreviewDisplay(holder)
-
         camera.setDisplayOrientation(90)
     }
 }

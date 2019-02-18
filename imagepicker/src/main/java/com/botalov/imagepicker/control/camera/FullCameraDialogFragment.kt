@@ -1,46 +1,111 @@
 package com.botalov.imagepicker.control.camera
 
-import android.graphics.Point
+import android.app.Dialog
+import android.graphics.*
 import android.hardware.Camera
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import android.view.*
 import com.botalov.imagepicker.utils.AnimationUtils
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.graphics.BitmapFactory
-import android.graphics.Bitmap
 import android.os.Environment
 import com.botalov.imagepicker.constants.F
 import java.io.ByteArrayOutputStream
 import java.io.File
-import android.media.MediaScannerConnection
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.BehaviorSubject
 import java.io.FileOutputStream
 import java.io.IOException
-import android.graphics.Matrix
 import android.media.ExifInterface
 import com.botalov.imagepicker.R
+import io.reactivex.Observer
+import android.content.Intent
+import android.net.Uri
 
 
-class FullCameraDialogFragment : androidx.fragment.app.DialogFragment() {
+class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), TextureView.SurfaceTextureListener {
     private var startView: View? = null
-    private var surfaceView: SurfaceView? = null
+    private var textureView: TextureView? = null
+    private var centerPreviewPoint: Point? = null
+    private var size: Point? = null
     private var camera: Camera? = null
     private val pictureCallback: Camera.PictureCallback? = getPictureCallback()
     private var pathNewPhoto: File? = null
     private val takePhotoObservable = BehaviorSubject.create<File>()
-    var disposable: Disposable? = null
+    private var disposable: Disposable? = null
+
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+    }
+
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+
+    }
+
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+        camera?.stopPreview()
+        camera?.release()
+        return true
+    }
+
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+        try {
+            camera?.setPreviewTexture(surface)
+        } catch (t: IOException) {
+        }
+        camera?.setDisplayOrientation(90)
+        camera?.startPreview()
+    }
 
     companion object {
         fun getNewInstance(parentView: View): FullCameraDialogFragment {
             val dialog = FullCameraDialogFragment()
             dialog.setStartView(parentView)
             dialog.setStyle(androidx.fragment.app.DialogFragment.STYLE_NO_FRAME, R.style.CameraDialogStyle)
+
             return dialog
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val hideObserver: Observer<Boolean> = object: Observer<Boolean>{
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onNext(data: Boolean) {
+                if(data) {
+                    dismiss()
+                }
+            }
+
+            override fun onComplete() {
+
+            }
+        }
+        val d = super.onCreateDialog(savedInstanceState)
+        d.setOnKeyListener { dialog, keyCode, event ->
+            if (keyCode == android.view.KeyEvent.KEYCODE_BACK) {
+                if (centerPreviewPoint != null && textureView != null && size != null) {
+                    AnimationUtils.circleHideAnimationView(
+                        textureView!!,
+                        500,
+                        centerPreviewPoint!!,
+                        size!!,
+                        hideObserver
+                    )
+                } else {
+                    dialog.dismiss()
+                }
+                true
+            } else {
+                false
+            }
+        }
+        return d
     }
 
     override fun onStart() {
@@ -60,10 +125,15 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment() {
         initShutter(view)
     }
 
-    private fun initShutter(view: View){
+    private fun initShutter(view: View) {
         val shutter = view.findViewById<ImageButton>(R.id.shutter_image_button)
         shutter.setOnClickListener {
-            camera!!.takePicture(null, null, pictureCallback)
+            //camera!!.takePicture(null, null, pictureCallback)
+            camera!!.autoFocus { success, camera ->
+                if (success) {
+                    camera!!.takePicture(null, null, pictureCallback)
+                }
+            }
         }
     }
 
@@ -73,13 +143,13 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.camera_full_view_layout, container, false)
-        surfaceView = mainView.findViewById(R.id.camera_surface_view)
-        camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
-        val holderCallback = CameraHolderCallback(camera)
-        val holder = surfaceView?.holder
+        textureView = mainView.findViewById(R.id.texture_view)
+        textureView?.surfaceTextureListener = this
 
-        holder?.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
-        holder?.addCallback(holderCallback)
+        camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
+        val params = camera!!.parameters
+        params!!.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+        camera!!.parameters = params
 
         return mainView
     }
@@ -89,12 +159,8 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment() {
             return
         }
 
-        //view?.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-        //view?.requestLayout()
-
-        /*view?.layoutParams = FrameLayout.LayoutParams(startView!!.width, startView!!.height)*/
         val display = activity?.windowManager?.defaultDisplay
-        val size = Point()
+        size = Point()
         display?.getSize(size)
 
         val location = IntArray(2)
@@ -105,22 +171,26 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment() {
         val window = dialog?.window
 
         val attrs = window!!.attributes
-        val x = -size.x / 2 + sourceX + startView!!.width / 2
-        val y = -size.y / 2 + sourceY + startView!!.height / 2
+        val x = -size!!.x / 2 + sourceX + startView!!.width / 2
+        val y = -size!!.y / 2 + sourceY + startView!!.height / 2
         attrs.x = x
         attrs.y = y
 
         window.attributes = attrs
 
-        val locationInScreen: IntArray? = IntArray(2)
+        val locationInScreen = IntArray(2)
         startView?.getLocationOnScreen(locationInScreen)
 
-        AnimationUtils.circleAnimationView(surfaceView!!,
-            true,
-            100000,
-            locationInScreen!![0] + startView!!.width / 2,
-            locationInScreen!![1] + startView!!.height / 2,
-            size)
+        centerPreviewPoint = Point(locationInScreen!![0] + startView!!.width / 2, locationInScreen!![1] + startView!!.height / 2)
+        textureView?.post {
+            AnimationUtils.circleShowAnimationView(
+                textureView!!,
+                500,
+                centerPreviewPoint!!,
+                size!!,
+                null
+            )
+        }
     }
 
     private fun getPictureCallback(): Camera.PictureCallback {
@@ -174,11 +244,16 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment() {
             val fo = FileOutputStream(pictureFile)
             fo.write(bytes.toByteArray())
             //fo.write();
-            MediaScannerConnection.scanFile(
+            /*MediaScannerConnection.scanFile(
                 this.context,
                 arrayOf(pictureFile.path),
                 arrayOf("image/jpeg"), null
-            )
+            )*/
+
+            val mediaScannerIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+            val fileContentUri = Uri.fromFile(pictureFile)
+            mediaScannerIntent.data = fileContentUri
+            this.activity?.sendBroadcast(mediaScannerIntent)
 
             fo.close()
 

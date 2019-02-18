@@ -8,19 +8,19 @@
         android:animateLayoutChanges="true"
         android:background="@android:color/transparent">
 
-    <!--<android.support.constraint.ConstraintLayout
-            android:id="@+id/back_cl"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"
-            android:animateLayoutChanges="true"
-            android:background="@color/colorAccent">-->
+    <!--android:background="@android:color/transparent"-->
 
-        <SurfaceView
+       <!-- <SurfaceView
                 android:id="@+id/camera_surface_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:visibility="gone"/>-->
+        <TextureView
+                android:id="@+id/texture_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+        />
 
          <ImageButton
                  android:id="@+id/shutter_image_button"
@@ -34,7 +34,6 @@
                  app:layout_constraintStart_toStartOf="parent"
                  android:layout_marginBottom="24dp"
                  app:layout_constraintBottom_toBottomOf="parent"/>
-    <!--</android.support.constraint.ConstraintLayout>-->
 
 
 

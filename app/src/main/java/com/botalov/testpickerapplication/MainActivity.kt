@@ -1,6 +1,6 @@
 package com.botalov.testpickerapplication
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.botalov.imagepicker.Picker
 import io.reactivex.Observer
