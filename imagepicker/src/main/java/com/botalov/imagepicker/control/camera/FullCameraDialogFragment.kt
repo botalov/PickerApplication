@@ -22,6 +22,7 @@ import com.botalov.imagepicker.R
 import io.reactivex.Observer
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import com.botalov.imagepicker.constants.F.Constants.CAMERA_OPEN_CLODE_DURATION
 
 
@@ -71,8 +72,8 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
 
     private var surfacePreview: SurfaceTexture? = null
     private var currentCameraId: Int? = null
-    private var typeCameraImageButton: ImageButton? = null
-    private val changeTypeCameraObserver: Observer<Int> = object : Observer<Int> {
+    private var switchCameraImageButton: ImageButton? = null
+    private val switchCameraObserver: Observer<Int> = object : Observer<Int> {
         override fun onComplete() {
 
         }
@@ -103,8 +104,8 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
             camera?.startPreview()
 
             when(cameraId) {
-                Camera.CameraInfo.CAMERA_FACING_FRONT -> typeCameraImageButton!!.setImageResource(R.drawable.ic_camera_front)
-                Camera.CameraInfo.CAMERA_FACING_BACK -> typeCameraImageButton!!.setImageResource(R.drawable.ic_camera_rear)
+                Camera.CameraInfo.CAMERA_FACING_FRONT -> switchCameraImageButton!!.setImageResource(R.drawable.ic_camera_front)
+                Camera.CameraInfo.CAMERA_FACING_BACK -> switchCameraImageButton!!.setImageResource(R.drawable.ic_camera_rear)
             }
         }
 
@@ -206,6 +207,9 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
 
     private fun initShutter(view: View) {
         val shutter = view.findViewById<ImageButton>(R.id.shutter_inner_image_button)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            shutter.elevation = 8f
+        }
         shutter.setOnClickListener {
             camera!!.autoFocus { success, camera ->
                 if (success) {
@@ -236,8 +240,8 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         flashImageButton = mainView.findViewById(R.id.flash_image_button)
         flashImageButton?.setOnClickListener { changeFlash() }
 
-        typeCameraImageButton = mainView.findViewById(R.id.camera_type_image_button)
-        typeCameraImageButton?.setOnClickListener { changeTypeCamera()}
+        switchCameraImageButton = mainView.findViewById(R.id.camera_switch_image_button)
+        switchCameraImageButton?.setOnClickListener { switchCamera()}
 
 
         return mainView
@@ -309,10 +313,10 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         }
     }
 
-    private fun changeTypeCamera() {
+    private fun switchCamera() {
         when(currentCameraId) {
-            Camera.CameraInfo.CAMERA_FACING_FRONT -> changeTypeCameraObserver.onNext(Camera.CameraInfo.CAMERA_FACING_BACK)
-            Camera.CameraInfo.CAMERA_FACING_BACK -> changeTypeCameraObserver.onNext(Camera.CameraInfo.CAMERA_FACING_FRONT)
+            Camera.CameraInfo.CAMERA_FACING_FRONT -> switchCameraObserver.onNext(Camera.CameraInfo.CAMERA_FACING_BACK)
+            Camera.CameraInfo.CAMERA_FACING_BACK -> switchCameraObserver.onNext(Camera.CameraInfo.CAMERA_FACING_FRONT)
         }
     }
 
