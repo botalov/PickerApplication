@@ -22,6 +22,7 @@ import com.botalov.imagepicker.R
 import io.reactivex.Observer
 import android.content.Intent
 import android.net.Uri
+import com.botalov.imagepicker.constants.F.Constants.CAMERA_OPEN_CLODE_DURATION
 
 
 class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), TextureView.SurfaceTextureListener {
@@ -34,6 +35,36 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     private var pathNewPhoto: File? = null
     private val takePhotoObservable = BehaviorSubject.create<File>()
     private var disposable: Disposable? = null
+
+    private var flashImageButton: ImageButton? = null
+    private val changeFlashMode: Observer<String> = object: Observer<String>{
+        override fun onSubscribe(d: Disposable) {
+
+        }
+
+        override fun onError(e: Throwable) {
+        }
+
+        override fun onNext(mode: String) {
+            val params = camera?.parameters
+            params?.flashMode = mode
+            val sizes = params?.supportedPreviewSizes
+            val cs = sizes?.get(0)
+            params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            params?.setPreviewSize(cs!!.width, cs.height)
+            camera?.parameters = params
+
+            when(mode) {
+                Camera.Parameters.FLASH_MODE_ON -> flashImageButton?.setImageResource(R.drawable.ic_flash_on)
+                Camera.Parameters.FLASH_MODE_AUTO -> flashImageButton?.setImageResource(R.drawable.ic_flash_auto)
+                Camera.Parameters.FLASH_MODE_OFF -> flashImageButton?.setImageResource(R.drawable.ic_flash_off)
+            }
+        }
+
+        override fun onComplete() {
+
+        }
+    }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
     }
@@ -92,7 +123,7 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
                 if (centerPreviewPoint != null && textureView != null && size != null) {
                     AnimationUtils.circleHideAnimationView(
                         textureView!!,
-                        500,
+                        CAMERA_OPEN_CLODE_DURATION,
                         centerPreviewPoint!!,
                         size!!,
                         hideObserver
@@ -142,14 +173,20 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val mainView = inflater.inflate(R.layout.camera_full_view_layout, container, false)
-        textureView = mainView.findViewById(R.id.texture_view)
+        val mainView = inflater.inflate(com.botalov.imagepicker.R.layout.camera_full_view_layout, container, false)
+        textureView = mainView.findViewById(com.botalov.imagepicker.R.id.texture_view)
         textureView?.surfaceTextureListener = this
 
         camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
         val params = camera!!.parameters
-        params!!.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+        val sizes = params.supportedPreviewSizes
+        val cs = sizes.get(0)
+        params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+        params?.setPreviewSize(cs!!.width, cs.height)
         camera!!.parameters = params
+
+        flashImageButton = mainView.findViewById(R.id.flash_image_button)
+        flashImageButton?.setOnClickListener { v -> changeFlash() }
 
         return mainView
     }
@@ -185,7 +222,7 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         textureView?.post {
             AnimationUtils.circleShowAnimationView(
                 textureView!!,
-                500,
+                CAMERA_OPEN_CLODE_DURATION,
                 centerPreviewPoint!!,
                 size!!,
                 null
@@ -207,6 +244,17 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
 
             dismiss()
 
+        }
+    }
+
+    private fun changeFlash(){
+        val cameraParams = camera?.parameters
+        val currentMode = cameraParams?.flashMode
+        when(currentMode){
+            Camera.Parameters.FLASH_MODE_AUTO -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_OFF)
+            Camera.Parameters.FLASH_MODE_OFF -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_ON)
+            Camera.Parameters.FLASH_MODE_ON -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_AUTO)
+            else -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_AUTO)
         }
     }
 

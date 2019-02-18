@@ -5,5 +5,6 @@ class F {
         const val COUNT_COLUMN = 3
 
         const val IMAGE_DIRECTORY = "carrot"
+        const val CAMERA_OPEN_CLODE_DURATION: Long = 500
     }
 }
