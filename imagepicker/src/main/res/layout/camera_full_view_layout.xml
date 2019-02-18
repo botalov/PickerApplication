@@ -63,7 +63,7 @@
             android:id="@+id/camera_type_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_camera_front"
+            android:src="@drawable/ic_camera_rear"
             android:background="@android:color/transparent"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/shutter_image_button"

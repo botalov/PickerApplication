@@ -69,8 +69,10 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         }
     }
 
+    private var surfacePreview: SurfaceTexture? = null
+    private var currentCameraId: Int? = null
     private var typeCameraImageButton: ImageButton? = null
-    private val changeTypeCameraObserver: Observer<String> = object : Observer<String> {
+    private val changeTypeCameraObserver: Observer<Int> = object : Observer<Int> {
         override fun onComplete() {
 
         }
@@ -79,8 +81,31 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
 
         }
 
-        override fun onNext(t: String) {
+        override fun onNext(cameraId: Int) {
+            currentCameraId = cameraId
+            camera?.stopPreview();
+            camera?.release()
+            camera = Camera.open(currentCameraId!!)
+            val params = camera!!.parameters
+            val sizes = params.supportedPreviewSizes
+            val cs = sizes[0]
+            if(params?.supportedFocusModes != null && params.supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            }
+            params?.setPreviewSize(cs!!.width, cs.height)
+            camera!!.parameters = params
 
+            try {
+                camera?.setPreviewTexture(surfacePreview)
+            } catch (t: IOException) {
+            }
+            camera?.setDisplayOrientation(90)
+            camera?.startPreview()
+
+            when(cameraId) {
+                Camera.CameraInfo.CAMERA_FACING_FRONT -> typeCameraImageButton!!.setImageResource(R.drawable.ic_camera_front)
+                Camera.CameraInfo.CAMERA_FACING_BACK -> typeCameraImageButton!!.setImageResource(R.drawable.ic_camera_rear)
+            }
         }
 
         override fun onError(e: Throwable) {
@@ -103,6 +128,7 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+        surfacePreview = surface
         try {
             camera?.setPreviewTexture(surface)
         } catch (t: IOException) {
@@ -198,10 +224,11 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         textureView = mainView.findViewById(com.botalov.imagepicker.R.id.texture_view)
         textureView?.surfaceTextureListener = this
 
-        camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
+        currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK
+        camera = Camera.open(currentCameraId!!)
         val params = camera!!.parameters
         val sizes = params.supportedPreviewSizes
-        val cs = sizes.get(0)
+        val cs = sizes[0]
         params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
         params?.setPreviewSize(cs!!.width, cs.height)
         camera!!.parameters = params
@@ -283,7 +310,10 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     }
 
     private fun changeTypeCamera() {
-        //val currentCameraId = camera?.parameters.
+        when(currentCameraId) {
+            Camera.CameraInfo.CAMERA_FACING_FRONT -> changeTypeCameraObserver.onNext(Camera.CameraInfo.CAMERA_FACING_BACK)
+            Camera.CameraInfo.CAMERA_FACING_BACK -> changeTypeCameraObserver.onNext(Camera.CameraInfo.CAMERA_FACING_FRONT)
+        }
     }
 
     private fun saveImage(bitmap: Bitmap) : File? {
