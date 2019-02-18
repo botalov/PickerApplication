@@ -37,7 +37,7 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     private var disposable: Disposable? = null
 
     private var flashImageButton: ImageButton? = null
-    private val changeFlashMode: Observer<String> = object: Observer<String>{
+    private val changeFlashModeObserver: Observer<String> = object: Observer<String>{
         override fun onSubscribe(d: Disposable) {
 
         }
@@ -47,23 +47,46 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
 
         override fun onNext(mode: String) {
             val params = camera?.parameters
-            params?.flashMode = mode
             val sizes = params?.supportedPreviewSizes
             val cs = sizes?.get(0)
             params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             params?.setPreviewSize(cs!!.width, cs.height)
-            camera?.parameters = params
 
-            when(mode) {
-                Camera.Parameters.FLASH_MODE_ON -> flashImageButton?.setImageResource(R.drawable.ic_flash_on)
-                Camera.Parameters.FLASH_MODE_AUTO -> flashImageButton?.setImageResource(R.drawable.ic_flash_auto)
-                Camera.Parameters.FLASH_MODE_OFF -> flashImageButton?.setImageResource(R.drawable.ic_flash_off)
+            val supportedModes = params?.supportedFlashModes
+            if(supportedModes != null && supportedModes.size > 0 && supportedModes.contains(mode)) {
+                params.flashMode = mode
+                when(mode) {
+                    Camera.Parameters.FLASH_MODE_ON -> flashImageButton?.setImageResource(R.drawable.ic_flash_on)
+                    Camera.Parameters.FLASH_MODE_AUTO -> flashImageButton?.setImageResource(R.drawable.ic_flash_auto)
+                    Camera.Parameters.FLASH_MODE_OFF -> flashImageButton?.setImageResource(R.drawable.ic_flash_off)
+                }
             }
+            camera?.parameters = params
         }
 
         override fun onComplete() {
 
         }
+    }
+
+    private var typeCameraImageButton: ImageButton? = null
+    private val changeTypeCameraObserver: Observer<String> = object : Observer<String> {
+        override fun onComplete() {
+
+        }
+
+        override fun onSubscribe(d: Disposable) {
+
+        }
+
+        override fun onNext(t: String) {
+
+        }
+
+        override fun onError(e: Throwable) {
+
+        }
+
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
@@ -101,7 +124,6 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val hideObserver: Observer<Boolean> = object: Observer<Boolean>{
             override fun onSubscribe(d: Disposable) {
-
             }
 
             override fun onError(e: Throwable) {
@@ -157,9 +179,8 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     }
 
     private fun initShutter(view: View) {
-        val shutter = view.findViewById<ImageButton>(R.id.shutter_image_button)
+        val shutter = view.findViewById<ImageButton>(R.id.shutter_inner_image_button)
         shutter.setOnClickListener {
-            //camera!!.takePicture(null, null, pictureCallback)
             camera!!.autoFocus { success, camera ->
                 if (success) {
                     camera!!.takePicture(null, null, pictureCallback)
@@ -186,7 +207,11 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         camera!!.parameters = params
 
         flashImageButton = mainView.findViewById(R.id.flash_image_button)
-        flashImageButton?.setOnClickListener { v -> changeFlash() }
+        flashImageButton?.setOnClickListener { changeFlash() }
+
+        typeCameraImageButton = mainView.findViewById(R.id.camera_type_image_button)
+        typeCameraImageButton?.setOnClickListener { changeTypeCamera()}
+
 
         return mainView
     }
@@ -243,7 +268,6 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
             }
 
             dismiss()
-
         }
     }
 
@@ -251,11 +275,15 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         val cameraParams = camera?.parameters
         val currentMode = cameraParams?.flashMode
         when(currentMode){
-            Camera.Parameters.FLASH_MODE_AUTO -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_OFF)
-            Camera.Parameters.FLASH_MODE_OFF -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_ON)
-            Camera.Parameters.FLASH_MODE_ON -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_AUTO)
-            else -> changeFlashMode.onNext(Camera.Parameters.FLASH_MODE_AUTO)
+            Camera.Parameters.FLASH_MODE_AUTO -> changeFlashModeObserver.onNext(Camera.Parameters.FLASH_MODE_OFF)
+            Camera.Parameters.FLASH_MODE_OFF -> changeFlashModeObserver.onNext(Camera.Parameters.FLASH_MODE_ON)
+            Camera.Parameters.FLASH_MODE_ON -> changeFlashModeObserver.onNext(Camera.Parameters.FLASH_MODE_AUTO)
+            else -> changeFlashModeObserver.onNext(Camera.Parameters.FLASH_MODE_AUTO)
         }
+    }
+
+    private fun changeTypeCamera() {
+        //val currentCameraId = camera?.parameters.
     }
 
     private fun saveImage(bitmap: Bitmap) : File? {
