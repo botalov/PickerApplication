@@ -12,4 +12,6 @@
 
     <color name="colorAlertDialogTitle">#de000000</color>
     <color name="colorAlertDialogMessage">#8a000000</color>
+
+    <color name="colorFullScreenPreviewBkg">#000000</color>
 </resources>

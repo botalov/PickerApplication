@@ -13,8 +13,6 @@
                 android:name=".control.bottom_sheet.picker_bottom_sheet.view.PickerBottomSheet"
                 android:theme="@style/Translucent"/>
 
-        <activity android:name=".control.camera.full_camera.view.FullCameraDialogFragment"/>
-
     </application>
 
 </manifest>

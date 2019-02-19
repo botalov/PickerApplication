@@ -162,13 +162,13 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     }
 
     fun showFullCamera(startView: View) {
-       FullCameraDialogFragment.getNewInstance(startView, this)
-       /* fullCamera.setSubscribe(Consumer {
+        val fullCamera = FullCameraDialogFragment.getNewInstance(startView)
+        fullCamera.setSubscribe(Consumer {
             run {
                 sendImage(it)
             }
         })
-        fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")*/
+        fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
     }
 
     private fun initToolbar() {
