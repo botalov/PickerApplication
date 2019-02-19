@@ -134,7 +134,7 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         val imagesRepository = ImagesRepository()
         val dis = Observable
             .just(true)
-            .subscribeOn(Schedulers.computation())
+            .subscribeOn(Schedulers.io())
             .doOnNext {
                 imagesRepository.loadImages(context!!)
                 Thread.sleep(1)
