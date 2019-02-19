@@ -23,7 +23,7 @@ import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImagesRepository
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity
-import com.botalov.imagepicker.control.camera.FullCameraDialogFragment
+import com.botalov.imagepicker.control.camera.full_camera.view.FullCameraDialogFragment
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
@@ -162,13 +162,13 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
     }
 
     fun showFullCamera(startView: View) {
-        val fullCamera = FullCameraDialogFragment.getNewInstance(startView)
-        fullCamera.setSubscribe(Consumer {
+       FullCameraDialogFragment.getNewInstance(startView, this)
+       /* fullCamera.setSubscribe(Consumer {
             run {
                 sendImage(it)
             }
         })
-        fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
+        fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")*/
     }
 
     private fun initToolbar() {
