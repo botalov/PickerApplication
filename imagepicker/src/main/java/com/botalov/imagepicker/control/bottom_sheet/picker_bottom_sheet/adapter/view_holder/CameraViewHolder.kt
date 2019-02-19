@@ -5,12 +5,11 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import com.botalov.imagepicker.R
-import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.IPickerContext
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import com.botalov.imagepicker.control.camera.CameraHolderCallback
 
 
-class CameraViewHolder(private val view: View, private val presenter: PickerPresenter) : BaseViewHolder(view), View.OnClickListener {
+class CameraViewHolder(view: View, private val presenter: PickerPresenter) : BaseViewHolder(view), View.OnClickListener {
     private val surfaceView = view.findViewById<SurfaceView>(R.id.camera_surface_view)
     private var camera: Camera? = null
 
