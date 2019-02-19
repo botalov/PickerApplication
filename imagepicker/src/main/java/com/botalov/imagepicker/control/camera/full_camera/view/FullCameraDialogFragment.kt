@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import java.io.File
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.BehaviorSubject
 import android.os.Build
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -241,8 +240,8 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
     }
 
 
-    fun setSubscribe(consumer: Consumer<File>) {
-        disposable = takePhotoObservable.subscribe(consumer)
+    fun setSubscribe(observer: Observer<File>) {
+        takePhotoObservable.subscribe(observer)
     }
 
 

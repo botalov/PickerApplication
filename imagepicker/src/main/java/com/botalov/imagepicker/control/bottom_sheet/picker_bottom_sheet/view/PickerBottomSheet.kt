@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import androidx.appcompat.app.AlertDialog
@@ -15,12 +16,12 @@ import androidx.appcompat.widget.Toolbar
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.botalov.imagepicker.Picker
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F.Constants.COUNT_COLUMN
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.IPickerContext
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.PickerRecyclerViewAdapter
-import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImageEntity
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImagesRepository
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity
@@ -30,7 +31,6 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 
@@ -112,14 +112,28 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
-                    .subscribe { granted ->
-                        if (granted) {
-                            permissionsLL.visibility = View.GONE
-                            loadImages()
-                        } else {
-                            finish()
+                    .subscribe(object : Observer<Boolean>{
+                        override fun onComplete() {
                         }
-                    }
+
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(isPermission: Boolean) {
+                            if (isPermission) {
+                                permissionsLL.visibility = View.GONE
+                                loadImages()
+                            } else {
+                                finish()
+                            }
+                        }
+
+                        override fun onError(e: Throwable) {
+                            showError("Permissions error")
+                        }
+
+                    })
+
             }
         } else {
             permissionsLL.visibility = View.GONE
@@ -190,19 +204,40 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
     fun showFullCamera(startView: View) {
         val fullCamera = FullCameraDialogFragment.getNewInstance(startView)
-        fullCamera.setSubscribe(Consumer {
-            run {
-                val isCorrectSize = Picker.getInstance().getImageMaxSizeInByte() > 0 && it.length() < Picker.getInstance().getImageMaxSizeInByte()
+        fullCamera.setSubscribe(object : Observer<File> {
+            override fun onComplete() {
 
-                if (isCorrectSize) {
-                    sendImage(it)
+            }
+
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onError(e: Throwable) {
+                Log.e("PickerBottomSheet", e.message)
+                showError("Error")
+            }
+
+            override fun onNext(file: File) {
+
+                run {
+                    val isCorrectSize =
+                        Picker.getInstance().getImageMaxSizeInByte() > 0 && file.length() < Picker.getInstance().getImageMaxSizeInByte()
+
+                    if (isCorrectSize) {
+                        sendImage(file)
+                    } else {
+                        showImageSizeError()
+                    }
                 }
-                else {
-                    showImageSizeError()
-                }
+
             }
         })
         fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")
+    }
+
+    private fun showError(s: String) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
     }
 
     private fun initToolbar() {
