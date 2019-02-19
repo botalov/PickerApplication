@@ -20,21 +20,29 @@ import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F.Constants.COUNT_COLUMN
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.IPickerContext
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter.PickerRecyclerViewAdapter
+import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImageEntity
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.model.ImagesRepository
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presenter.PickerPresenter
 import com.botalov.imagepicker.control.bottom_sheet.view.BaseBottomSheetActivity
 import com.botalov.imagepicker.control.camera.full_camera.view.FullCameraDialogFragment
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 
 class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
 
+    private var context: Context? = null
     private val presenter = PickerPresenter()
     private val peekHeight = Picker.getInstance().getStartHeightPicker()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        context = this
 
         val viewStubContent = findViewById<ViewStub>(R.id.vs_for_content_bottom_sheet)
         viewStubContent.layoutResource = R.layout.content_bottom_sheet_picker
@@ -121,17 +129,36 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         initToolbar()
     }
 
+
     private fun loadImages() {
         val imagesRepository = ImagesRepository()
-        imagesRepository.loadImages(this)
-        val images = imagesRepository.getAllImagesPath()
+        val dis = Observable
+            .just(true)
+            .subscribeOn(Schedulers.computation())
+            .doOnNext {
+                imagesRepository.loadImages(context!!)
+                Thread.sleep(1)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(object : Observer<Boolean>{override fun onSubscribe(d: Disposable) {
+            }
+                override fun onError(e: Throwable) {
+                }
 
-        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(com.botalov.imagepicker.R.id.images_recycler_view)
-        recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, COUNT_COLUMN)
+                override fun onNext(v: Boolean) {
+                    val images = imagesRepository.getAllImagesPath()
+                    val adapter = PickerRecyclerViewAdapter(this@PickerBottomSheet, images, presenter)
 
-        val adapter = PickerRecyclerViewAdapter(this, images, presenter)
-        recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
+                    val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(com.botalov.imagepicker.R.id.images_recycler_view)
+                    recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context!!, COUNT_COLUMN)
+                    recyclerView.adapter = adapter
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onComplete() {
+
+                }})
+
     }
 
     @SuppressLint("InflateParams")
