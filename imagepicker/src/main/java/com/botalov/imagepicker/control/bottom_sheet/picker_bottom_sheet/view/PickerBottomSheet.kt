@@ -165,7 +165,14 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
         val fullCamera = FullCameraDialogFragment.getNewInstance(startView)
         fullCamera.setSubscribe(Consumer {
             run {
-                sendImage(it)
+                val isCorrectSize = Picker.getInstance().getImageMaxSizeInByte() > 0 && it.length() < Picker.getInstance().getImageMaxSizeInByte()
+
+                if (isCorrectSize) {
+                    sendImage(it)
+                }
+                else {
+                    showImageSizeError()
+                }
             }
         })
         fullCamera.show((this.getContext() as AppCompatActivity).supportFragmentManager, "FULL_CAMERA")

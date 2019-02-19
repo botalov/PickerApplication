@@ -16,12 +16,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.BehaviorSubject
 import android.os.Build
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F
 import io.reactivex.Observer
-import com.botalov.imagepicker.constants.F.Constants.CAMERA_OPEN_CLODE_DURATION
+import com.botalov.imagepicker.constants.F.Constants.CAMERA_OPEN_CLOSE_DURATION
 import com.botalov.imagepicker.control.camera.full_camera.presenter.FullCameraPresenter
 import com.botalov.imagepicker.control.camera.full_camera.presenter.IFullCameraPresenter
 import com.github.chrisbanes.photoview.PhotoView
@@ -130,7 +129,7 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
                 if (centerPreviewPoint != null && textureView != null && size != null) {
                     AnimationUtils.circleHideAnimationView(
                         textureView!!,
-                        CAMERA_OPEN_CLODE_DURATION,
+                        CAMERA_OPEN_CLOSE_DURATION,
                         centerPreviewPoint!!,
                         size!!,
                         hideObserver
@@ -175,7 +174,7 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         textureView?.post {
             AnimationUtils.circleShowAnimationView(
                 textureView!!,
-                F.Constants.CAMERA_OPEN_CLODE_DURATION,
+                F.Constants.CAMERA_OPEN_CLOSE_DURATION,
                 centerPreviewPoint,
                 size,
                 null
