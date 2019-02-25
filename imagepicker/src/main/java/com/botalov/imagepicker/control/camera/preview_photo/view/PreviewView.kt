@@ -1,5 +1,7 @@
 package com.botalov.imagepicker.control.camera.preview_photo.view
 
-class PreviewView: IPreviewView, androidx.fragment.app.DialogFragment() {
+import android.support.v4.app.DialogFragment
+
+class PreviewView: IPreviewView, DialogFragment() {
 
 }

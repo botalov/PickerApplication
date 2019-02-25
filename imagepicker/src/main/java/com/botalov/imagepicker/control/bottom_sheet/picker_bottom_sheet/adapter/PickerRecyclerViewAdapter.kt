@@ -1,6 +1,7 @@
 package com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.adapter
 
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.support.constraint.ConstraintLayout
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.presente
 import java.lang.Exception
 
 
-class PickerRecyclerViewAdapter(private val pickerContext: IPickerContext, images: List<ImageEntity>, private val presenter: PickerPresenter) : androidx.recyclerview.widget.RecyclerView.Adapter<BaseViewHolder>() {
+class PickerRecyclerViewAdapter(private val pickerContext: IPickerContext, images: List<ImageEntity>, private val presenter: PickerPresenter) : RecyclerView.Adapter<BaseViewHolder>() {
     private var mInflater: LayoutInflater? = null
     private var mImages: List<ImageEntity>? = images
 

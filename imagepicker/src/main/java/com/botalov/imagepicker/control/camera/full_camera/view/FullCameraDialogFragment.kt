@@ -15,7 +15,8 @@ import java.io.File
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import android.os.Build
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.support.constraint.ConstraintLayout
+import android.support.v4.app.DialogFragment
 import com.botalov.imagepicker.R
 import com.botalov.imagepicker.constants.F
 import io.reactivex.Observer
@@ -24,8 +25,10 @@ import com.botalov.imagepicker.control.camera.full_camera.presenter.FullCameraPr
 import com.botalov.imagepicker.control.camera.full_camera.presenter.IFullCameraPresenter
 import com.github.chrisbanes.photoview.PhotoView
 
+//import com.github.chrisbanes.photoview.PhotoView
 
-class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), TextureView.SurfaceTextureListener, IFullCameraView {
+
+class FullCameraDialogFragment : DialogFragment(), TextureView.SurfaceTextureListener, IFullCameraView {
 
 
     private val presenter: IFullCameraPresenter = FullCameraPresenter()
@@ -98,7 +101,7 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         fun getNewInstance(parentView: View): FullCameraDialogFragment {
             val dialog = FullCameraDialogFragment()
             dialog.setStartView(parentView)
-            dialog.setStyle(androidx.fragment.app.DialogFragment.STYLE_NO_FRAME, R.style.CameraDialogStyle)
+            dialog.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.CameraDialogStyle)
 
             return dialog
         }
@@ -189,7 +192,6 @@ class FullCameraDialogFragment : androidx.fragment.app.DialogFragment(), Texture
         shutter?.visibility = View.GONE
         fullPreview?.visibility = View.VISIBLE
         previewImageView?.setImageURI(Uri.fromFile(file))
-        //textureView?.visibility = View.GONE
     }
 
 

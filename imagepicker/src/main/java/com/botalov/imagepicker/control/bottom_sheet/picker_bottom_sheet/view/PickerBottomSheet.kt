@@ -7,12 +7,14 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.support.design.widget.BottomSheetBehavior
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.util.Log
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
@@ -163,8 +165,8 @@ class PickerBottomSheet : BaseBottomSheetActivity(), IPickerContext {
                     val images = imagesRepository.getAllImagesPath()
                     val adapter = PickerRecyclerViewAdapter(this@PickerBottomSheet, images, presenter)
 
-                    val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(com.botalov.imagepicker.R.id.images_recycler_view)
-                    recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context!!, COUNT_COLUMN)
+                    val recyclerView = findViewById<RecyclerView>(com.botalov.imagepicker.R.id.images_recycler_view)
+                    recyclerView.layoutManager = GridLayoutManager(context!!, COUNT_COLUMN)
                     recyclerView.adapter = adapter
                     adapter.notifyDataSetChanged()
                 }

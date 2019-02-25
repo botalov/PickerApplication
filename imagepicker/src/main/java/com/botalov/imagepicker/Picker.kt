@@ -2,7 +2,7 @@ package com.botalov.imagepicker
 
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.support.v7.app.AppCompatActivity
 import com.botalov.imagepicker.control.bottom_sheet.picker_bottom_sheet.view.PickerBottomSheet
 import io.reactivex.Observer
 import java.io.File
